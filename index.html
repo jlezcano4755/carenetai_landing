@@ -266,6 +266,8 @@ input::placeholder { color: #5f7886; }
 
 .site-footer { width: min(calc(100% - 40px), var(--max)); margin: 0 auto 30px; border-top: 1px solid var(--line); padding: 34px 0 10px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: center; color: var(--muted); font-size: 13px; }
 .site-footer > p { margin: 0; text-align: center; }
+.site-footer > p a { color: var(--text); font-weight: 700; }
+.site-footer > p a:hover { color: var(--accent); }
 .footer-links { display: flex; gap: 18px; justify-content: flex-end; flex-wrap: wrap; }
 .footer-links a:hover { color: var(--text); }
 
@@ -363,10 +365,11 @@ input::placeholder { color: #5f7886; }
 </style>
 </head>
 <body>
+  <div id="top" aria-hidden="true"></div>
   <div class="ambient ambient-a"></div>
   <div class="ambient ambient-b"></div>
 
-  <header class="site-header" id="top">
+  <header class="site-header">
     <a class="brand" href="#top" aria-label="CareNet AI home">
       <img class="brand-logo" src="carenetai.png" alt="" width="42" height="42" />
       <span class="brand-text">CareNet <b>AI</b></span>
@@ -726,7 +729,7 @@ input::placeholder { color: #5f7886; }
       <img class="brand-logo" src="carenetai.png" alt="" width="34" height="34" loading="lazy" />
       <span>CareNet AI</span>
     </div>
-    <p data-i18n="footerTagline">Built around people. Connected to care.</p>
+    <p>Powered by <a href="https://maxiacliniq.tiiny.site" target="_blank" rel="noopener">Maxia</a></p>
     <div class="footer-links">
       <a href="#top" data-i18n="footerTop">Volver arriba</a>
       <a href="mailto:info@carenetai.health">info@carenetai.health</a>
@@ -781,7 +784,7 @@ const copy = {
     fieldName: "Nombre y apellido", fieldNamePlaceholder: "Dra. Ana Pérez", fieldEmail: "Correo profesional", fieldPhone: "Número de teléfono", fieldPhonePlaceholder: "+507 6000-0000", fieldOrg: "Clínica u organización", fieldOrgPlaceholder: "Nombre de tu clínica", fieldCountry: "País", fieldCountryPlaceholder: "Panamá",
     privacyNote: "Al continuar, aceptas que CareNet AI use estos datos para coordinar la demo. No solicitamos información clínica de pacientes en este formulario.",
     back: "Atrás", continue: "Continuar", bookDemo: "Agenda una demo", successLabel: "Perfil recibido", successTitle: "Ahora agenda tu demo.", openCalendar: "Abrir agenda", schedulerNote: "Conecta aquí tu enlace de Calendly, Cal.com o agenda preferida antes de publicar.",
-    footerTagline: "Built around people. Connected to care.", footerTop: "Volver arriba",
+    footerTop: "Volver arriba",
     independentTitle: "¿Cuál es tu especialidad?", independentText: "Selecciona la opción que mejor describe tu práctica.", independentLabel: "Especialidad",
     teamTitle: "¿En qué área se enfoca tu equipo?", teamText: "Selecciona el dominio clínico o modelo de atención principal.", teamLabel: "Área clínica",
     selectPlaceholder: "Selecciona una opción",
@@ -831,7 +834,7 @@ const copy = {
     fieldName: "Full name", fieldNamePlaceholder: "Dr. Ana Perez", fieldEmail: "Professional email", fieldPhone: "Phone number", fieldPhonePlaceholder: "+1 555 000 0000", fieldOrg: "Clinic or organization", fieldOrgPlaceholder: "Your clinic name", fieldCountry: "Country", fieldCountryPlaceholder: "United States",
     privacyNote: "By continuing, you agree that CareNet AI may use these details to coordinate the demo. We do not request patient clinical information in this form.",
     back: "Back", continue: "Continue", bookDemo: "Book a demo", successLabel: "Profile received", successTitle: "Now book your demo.", openCalendar: "Open calendar", schedulerNote: "Connect your Calendly, Cal.com, or preferred scheduling link here before publishing.",
-    footerTagline: "Built around people. Connected to care.", footerTop: "Back to top",
+    footerTop: "Back to top",
     independentTitle: "What is your specialty?", independentText: "Choose the option that best describes your practice.", independentLabel: "Specialty",
     teamTitle: "What does your clinical team focus on?", teamText: "Choose your main clinical domain or care model.", teamLabel: "Clinical focus",
     selectPlaceholder: "Select an option",
