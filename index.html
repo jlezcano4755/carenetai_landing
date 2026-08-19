@@ -1,0 +1,1372 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="CareNet AI — continuidad longitudinal entre la vida cotidiana de la persona y su equipo de salud." />
+  <link rel="icon" type="image/png" href="carenetai.png" />
+  <title>CareNet AI — Care that continues beyond the consultation</title>
+  <style>
+:root {
+  --bg: #07111c;
+  --bg-soft: #0b1725;
+  --panel: rgba(13, 29, 46, 0.78);
+  --panel-strong: #0f2032;
+  --line: rgba(169, 203, 220, 0.14);
+  --line-strong: rgba(169, 203, 220, 0.28);
+  --text: #edf7fb;
+  --muted: #9eb5c2;
+  --muted-2: #708a99;
+  --accent: #6ee7d4;
+  --accent-2: #5ba8ff;
+  --accent-soft: rgba(110, 231, 212, 0.12);
+  --danger: #ffb4b4;
+  --shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-sm: 14px;
+  --max: 1180px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 80% -10%, rgba(91,168,255,0.14), transparent 28%),
+    radial-gradient(circle at 20% 10%, rgba(110,231,212,0.08), transparent 23%),
+    var(--bg);
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+button, input, select { font: inherit; }
+button { color: inherit; }
+
+.ambient {
+  position: fixed;
+  pointer-events: none;
+  filter: blur(90px);
+  opacity: 0.18;
+  z-index: -1;
+}
+.ambient-a { width: 320px; height: 320px; border-radius: 50%; background: var(--accent); top: 24%; left: -150px; }
+.ambient-b { width: 460px; height: 460px; border-radius: 50%; background: var(--accent-2); bottom: 6%; right: -240px; }
+
+.site-header {
+  width: min(calc(100% - 40px), var(--max));
+  margin: 22px auto 0;
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 10px 12px 10px 18px;
+  background: rgba(7, 17, 28, 0.68);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  backdrop-filter: blur(18px);
+  position: sticky;
+  top: 14px;
+  z-index: 50;
+}
+.brand, .footer-brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 730; letter-spacing: -0.02em; }
+.brand-text { font-size: 19px; white-space: nowrap; }
+.brand-text b { color: var(--accent); }
+.brand-logo { width: 42px; height: 42px; display: block; object-fit: cover; border-radius: 10px; }
+.footer-brand .brand-logo { width: 34px; height: 34px; border-radius: 8px; }
+
+.nav { display: flex; gap: 28px; color: var(--muted); font-size: 14px; }
+.nav a:hover { color: var(--text); }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.lang-switch {
+  min-width: 42px; height: 40px; border-radius: 11px; border: 1px solid var(--line);
+  background: transparent; color: var(--muted); cursor: pointer;
+}
+.lang-switch:hover { color: var(--text); border-color: var(--line-strong); }
+
+.button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 48px; padding: 0 20px; border-radius: 13px;
+  border: 1px solid transparent; font-weight: 700; cursor: pointer;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.button:hover { transform: translateY(-1px); }
+.button-sm { min-height: 42px; padding: 0 16px; font-size: 14px; }
+.button-primary { background: linear-gradient(135deg, var(--accent), #8feee0); color: #06231f; box-shadow: 0 12px 30px rgba(110,231,212,.12); }
+.button-ghost { background: rgba(255,255,255,.02); border-color: var(--line); color: var(--text); }
+.button-ghost:hover { border-color: var(--line-strong); background: rgba(255,255,255,.04); }
+
+.section { width: min(calc(100% - 40px), var(--max)); margin: 0 auto; padding: 96px 0; }
+.hero { min-height: 720px; display: grid; grid-template-columns: 1.05fr .95fr; gap: 60px; align-items: center; padding-top: 70px; }
+.hero-copy { max-width: 640px; }
+.eyebrow, .section-kicker, .form-label {
+  color: var(--accent); text-transform: uppercase; letter-spacing: .13em; font-size: 12px; font-weight: 800;
+}
+h1, h2, h3, p { margin-top: 0; }
+h1 { font-size: clamp(52px, 6vw, 84px); line-height: .98; letter-spacing: -0.058em; margin: 20px 0 28px; max-width: 760px; }
+h2 { font-size: clamp(38px, 4.6vw, 62px); line-height: 1.02; letter-spacing: -0.045em; margin: 18px 0 24px; }
+h3 { font-size: 22px; line-height: 1.18; letter-spacing: -0.025em; }
+.hero-lede { font-size: 19px; line-height: 1.7; color: var(--muted); max-width: 620px; }
+.hero-actions { display: flex; gap: 12px; margin: 34px 0 20px; flex-wrap: wrap; }
+.hero-note { color: var(--muted-2); font-size: 14px; }
+
+.hero-visual {
+  position: relative; height: 560px; border-radius: 40px;
+  border: 1px solid var(--line); overflow: hidden;
+  background:
+    radial-gradient(circle at 67% 67%, rgba(110,231,212,.10), transparent 24%),
+    radial-gradient(circle at 58% 64%, rgba(91,168,255,.09), transparent 34%),
+    linear-gradient(160deg, rgba(15,32,50,.82), rgba(8,19,31,.66));
+  box-shadow: var(--shadow);
+}
+.hero-visual:before {
+  content: ""; position: absolute; inset: 0;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 42px 42px; opacity: .16;
+}
+.journey-svg { position: relative; z-index: 1; width: 100%; height: 100%; display: block; overflow: visible; }
+.journey-axis { stroke: rgba(218,236,244,.55); stroke-width: 1.2; }
+.journey-guide { stroke: rgba(91,168,255,.42); stroke-width: 1; }
+.journey-axis-text { fill: var(--muted); font-size: 12px; font-weight: 650; letter-spacing: .01em; }
+.journey-axis-value { fill: #cfe3ec; font-size: 12px; font-weight: 780; }
+.journey-curve-glow { fill: none; stroke: rgba(110,231,212,.11); stroke-width: 13; filter: blur(8px); }
+.journey-curve { fill: none; stroke: #d9eaf1; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
+.journey-event-line { stroke: rgba(255,69,75,.62); stroke-width: 1.2; stroke-dasharray: 4 6; }
+.journey-event-dot { fill: #ff454b; filter: drop-shadow(0 0 7px rgba(255,69,75,.72)); }
+.journey-event-ring { fill: none; stroke: rgba(255,69,75,.48); stroke-width: 1.3; transform-origin: center; animation: event-ring 2s ease-out infinite; }
+.journey-event-text { fill: #ff9da0; font-size: 11px; font-weight: 700; }
+.journey-event-sub { fill: var(--muted-2); font-size: 10px; }
+.journey-visit-line { stroke: rgba(91,168,255,.62); stroke-width: 1.2; stroke-dasharray: 3 4; }
+.journey-visit-dot { fill: #5ba8ff; filter: drop-shadow(0 0 6px rgba(91,168,255,.68)); }
+.journey-visit-provider { fill: #0d2637; stroke: #5ba8ff; stroke-width: 1.5; }
+.journey-visit-cross { stroke: #b9d8ff; stroke-width: 1.5; stroke-linecap: round; }
+.journey-visit-text { fill: #b9d8ff; font-size: 10px; font-weight: 760; }
+.journey-snapshot-line { stroke: rgba(91,168,255,.58); stroke-width: 1.4; stroke-dasharray: 6 5; }
+.journey-snapshot-projection { fill: #07111c; stroke: #5ba8ff; stroke-width: 1.5; }
+.journey-deviation-line, .journey-deviation-cap { stroke: rgba(255,177,102,.82); stroke-width: 1.5; }
+.journey-deviation-text { fill: #ffc38a; font-size: 9px; font-weight: 760; text-anchor: end; paint-order: stroke; stroke: rgba(7,17,28,.92); stroke-width: 4px; stroke-linejoin: round; }
+.traveler-halo { fill: rgba(110,231,212,.16); stroke: rgba(110,231,212,.28); stroke-width: 1; }
+.traveler-core { fill: #07111c; stroke: #6ee7d4; stroke-width: 2.5; filter: drop-shadow(0 0 10px rgba(110,231,212,.42)); }
+.traveler-label { fill: #edf7fb; font-size: 11px; font-weight: 780; paint-order: stroke; stroke: rgba(7,17,28,.88); stroke-width: 4px; stroke-linejoin: round; }
+.network-link { stroke: rgba(110,231,212,.24); stroke-width: 1; }
+.network-link.mesh { stroke: rgba(91,168,255,.16); }
+.provider-node { fill: #0d2637; stroke: rgba(110,231,212,.85); stroke-width: 1.4; filter: drop-shadow(0 0 7px rgba(110,231,212,.25)); }
+.provider-node.alt { stroke: rgba(91,168,255,.92); }
+.carenet-orchestrator { fill: #7f6dff; stroke: #d9d3ff; stroke-width: 1.6; filter: drop-shadow(0 0 10px rgba(127,109,255,.62)); }
+.network-orbit { fill: none; stroke: rgba(110,231,212,.17); stroke-width: 1; stroke-dasharray: 4 7; }
+.network-orbit.alt { stroke: rgba(127,109,255,.18); stroke-dasharray: 2 7; }
+.carenet-orbit { fill: none; stroke: rgba(168,156,255,.42); stroke-width: 1.15; stroke-dasharray: 4 6; }
+.journey-current { stroke: rgba(218,236,244,.12); stroke-width: 1; stroke-dasharray: 3 9; }
+.network-text { fill: #9edfd6; font-size: 10px; font-weight: 700; }
+.carenet-text { fill: #a89cff; font-size: 11px; font-weight: 800; }
+.recovery-pulse { fill: rgba(110,231,212,.18); stroke: rgba(110,231,212,.38); stroke-width: 1; }
+.sarci-state-box { fill: rgba(7,17,28,.78); stroke: rgba(169,203,220,.20); stroke-width: 1; }
+.sarci-state-title { fill: #edf7fb; font-size: 11px; font-weight: 800; }
+.sarci-state-sub { fill: var(--muted); font-size: 9.5px; font-weight: 650; }
+.visual-caption { position: absolute; bottom: 14px; left: 24px; right: 24px; z-index: 2; color: var(--muted); font-size: 11px; text-align: center; pointer-events: none; line-height: 1.4; }
+.visual-caption strong { display: block; color: #dcebf1; font-size: 11.5px; font-weight: 800; margin-bottom: 2px; }
+.visual-caption span { display: block; }
+@keyframes event-ring { 0% { opacity:.9; transform:scale(.7); } 100% { opacity:0; transform:scale(1.8); } }
+@media (prefers-reduced-motion: reduce) { .journey-event-ring { animation: none; } }
+
+.trust-strip {
+  width: min(calc(100% - 40px), var(--max)); margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr);
+  border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: rgba(255,255,255,.018);
+}
+.trust-strip div { padding: 22px 24px; display: flex; gap: 12px; align-items: center; border-right: 1px solid var(--line); }
+.trust-strip div:last-child { border-right: 0; }
+.trust-strip span { color: var(--accent); font-size: 11px; font-weight: 800; }
+.trust-strip b { font-size: 13px; font-weight: 700; color: #d9e8ef; }
+
+.statement { max-width: 980px; text-align: center; }
+.statement > p { max-width: 790px; margin: 0 auto; color: var(--muted); font-size: 18px; line-height: 1.75; }
+.causal-chain { display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 38px; }
+.causal-chain div { border: 1px solid var(--line); padding: 10px 14px; border-radius: 999px; color: #dcebf1; background: rgba(255,255,255,.018); font-size: 13px; font-weight: 700; }
+.causal-chain span { color: var(--muted-2); }
+
+.split { display: grid; grid-template-columns: .8fr 1.2fr; gap: 70px; align-items: start; }
+.split-intro { position: sticky; top: 120px; }
+.split-intro p { color: var(--muted); font-size: 17px; line-height: 1.7; }
+.steps { display: grid; gap: 14px; }
+.step-card { position: relative; padding: 26px 28px 26px 78px; border-radius: var(--radius-md); border: 1px solid var(--line); background: rgba(255,255,255,.018); }
+.step-number { position: absolute; left: 24px; top: 27px; font-size: 12px; color: var(--accent); font-weight: 800; }
+.step-card h3 { margin-bottom: 8px; }
+.step-card p { color: var(--muted); margin-bottom: 0; line-height: 1.65; }
+
+.person-first-panel { border-radius: 30px; border: 1px solid rgba(110,231,212,.22); background: linear-gradient(135deg, rgba(110,231,212,.08), rgba(91,168,255,.045)); padding: 56px; display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
+.person-first-panel p { color: var(--muted); line-height: 1.8; font-size: 17px; margin: 0; }
+
+.section-heading { max-width: 780px; margin-bottom: 42px; }
+.section-heading.centered { margin-left: auto; margin-right: auto; text-align: center; }
+.benefit-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+.benefit-card { border: 1px solid var(--line); border-radius: var(--radius-md); padding: 24px; background: rgba(255,255,255,.016); min-height: 250px; }
+.benefit-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 12px; border: 1px solid var(--line); color: var(--accent); margin-bottom: 34px; }
+.benefit-card p { color: var(--muted); line-height: 1.65; font-size: 14px; }
+
+.pathways { border-top: 1px solid var(--line); }
+.pathway-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.pathway-grid article { padding: 28px; min-height: 230px; border-radius: var(--radius-md); background: var(--panel); border: 1px solid var(--line); }
+.pathway-grid article > span { display: inline-block; color: var(--accent); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .11em; margin-bottom: 50px; }
+.pathway-grid p { color: var(--muted); line-height: 1.65; }
+
+.guardrails { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; }
+.guardrail-list { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.guardrail-list div { display: grid; grid-template-columns: 150px 1fr; gap: 24px; padding: 24px 0; border-bottom: 1px solid var(--line); }
+.guardrail-list b { font-size: 14px; }
+.guardrail-list span { color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+.demo-section { display: grid; grid-template-columns: .78fr 1.22fr; gap: 70px; align-items: start; padding-bottom: 120px; }
+.demo-copy { position: sticky; top: 120px; }
+.demo-copy p { color: var(--muted); font-size: 17px; line-height: 1.7; }
+.demo-points { display: grid; gap: 12px; margin-top: 28px; color: #ccdde5; font-size: 14px; }
+.form-shell { border: 1px solid var(--line); background: rgba(11,23,37,.88); border-radius: 30px; padding: 28px; box-shadow: var(--shadow); min-height: 560px; }
+.form-progress { display: flex; align-items: center; margin-bottom: 42px; }
+.progress-step { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--line-strong); color: var(--muted-2); font-size: 11px; font-weight: 800; }
+.progress-step.active, .progress-step.done { border-color: var(--accent); color: #06231f; background: var(--accent); }
+.progress-line { flex: 1; height: 1px; background: var(--line); }
+.form-step { display: none; }
+.form-step.active { display: block; animation: fadeUp .28s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+.form-step h3 { font-size: 28px; margin: 12px 0 8px; }
+.form-step > p { color: var(--muted); margin-bottom: 28px; }
+.choice-grid { display: grid; gap: 12px; }
+.choice-grid.two { grid-template-columns: repeat(2,1fr); }
+.choice-grid.four { grid-template-columns: repeat(4,1fr); }
+.choice-card { text-align: left; min-height: 150px; padding: 20px; border-radius: 18px; border: 1px solid var(--line); background: rgba(255,255,255,.018); cursor: pointer; transition: border-color .15s ease, background .15s ease, transform .15s ease; }
+.choice-card:hover, .choice-card.selected { border-color: rgba(110,231,212,.52); background: rgba(110,231,212,.07); transform: translateY(-1px); }
+.choice-card .choice-icon { display: block; color: var(--accent); margin-bottom: 22px; }
+.choice-card b, .choice-card small { display: block; }
+.choice-card small { color: var(--muted); margin-top: 8px; line-height: 1.45; }
+.choice-card.compact { min-height: 84px; display: grid; place-items: center; text-align: center; padding: 14px; }
+.choice-card.compact b { font-size: 18px; }
+.select-wrap, .field-grid label { display: grid; gap: 8px; color: #dce9ef; font-size: 13px; font-weight: 700; }
+select, input {
+  width: 100%; min-height: 52px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line); outline: none;
+  color: var(--text); background: #0a1826;
+}
+select:focus, input:focus { border-color: rgba(110,231,212,.52); box-shadow: 0 0 0 3px rgba(110,231,212,.06); }
+input::placeholder { color: #5f7886; }
+.field-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 15px; }
+.full-width { grid-column: 1/-1; }
+.form-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; }
+.privacy-note { color: var(--muted-2) !important; font-size: 12px !important; line-height: 1.55; margin-top: 18px !important; margin-bottom: 0 !important; }
+.field-error { border-color: rgba(255,180,180,.65) !important; }
+
+.form-success { display: none; text-align: center; padding: 44px 12px 24px; }
+.form-success.active { display: block; animation: fadeUp .3s ease; }
+.success-mark { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; margin: 0 auto 24px; background: var(--accent); color: #06231f; font-size: 28px; font-weight: 900; }
+.form-success h3 { font-size: 30px; margin: 12px 0; }
+.form-success p { color: var(--muted); max-width: 520px; margin: 0 auto 24px; }
+.scheduler-note { font-size: 12px; color: var(--muted-2) !important; margin-top: 16px !important; }
+
+.site-footer { width: min(calc(100% - 40px), var(--max)); margin: 0 auto 30px; border-top: 1px solid var(--line); padding: 34px 0 10px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: center; color: var(--muted); font-size: 13px; }
+.site-footer > p { margin: 0; text-align: center; }
+.footer-links { display: flex; gap: 18px; justify-content: flex-end; flex-wrap: wrap; }
+.footer-links a:hover { color: var(--text); }
+
+@media (max-width: 980px) {
+  .nav { display: none; }
+  .hero, .split, .demo-section, .guardrails { grid-template-columns: 1fr; }
+  .hero { padding-top: 52px; gap: 30px; }
+  .hero-visual { height: 500px; }
+  .split-intro, .demo-copy { position: static; }
+  .trust-strip { grid-template-columns: repeat(2,1fr); }
+  .trust-strip div:nth-child(2) { border-right: 0; }
+  .trust-strip div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .benefit-grid { grid-template-columns: repeat(2,1fr); }
+  .person-first-panel { grid-template-columns: 1fr; gap: 20px; }
+}
+
+@media (max-width: 700px) {
+  .site-header { width: min(calc(100% - 24px), var(--max)); min-height: 60px; margin-top: 12px; padding: 7px 9px 7px 10px; top: 8px; gap: 12px; }
+  .header-actions .button { display: none; }
+  .section, .trust-strip, .site-footer { width: min(calc(100% - 28px), var(--max)); }
+  .section { padding: 72px 0; }
+  .hero { min-height: auto; padding-top: 48px; }
+  h1 { font-size: clamp(42px, 13vw, 56px); line-height: 1; letter-spacing: -0.045em; }
+  h2 { font-size: clamp(32px, 10vw, 38px); }
+  .hero-lede { font-size: 17px; line-height: 1.6; }
+  .hero-visual { height: auto; aspect-ratio: 720 / 560; border-radius: 24px; }
+  .journey-axis-text, .journey-axis-value { font-size: 13px; }
+  .visual-caption { font-size: 11px; bottom: 12px; }
+  .trust-strip { grid-template-columns: 1fr; }
+  .trust-strip div { border-right: 0; border-bottom: 1px solid var(--line); }
+  .trust-strip div:last-child { border-bottom: 0; }
+  .person-first-panel { padding: 30px; }
+  .benefit-grid, .pathway-grid { grid-template-columns: 1fr; }
+  .guardrail-list div { grid-template-columns: 1fr; gap: 6px; }
+  .form-shell { padding: 20px; border-radius: 22px; }
+  .choice-grid.two, .choice-grid.four, .field-grid { grid-template-columns: 1fr; }
+  .full-width { grid-column: auto; }
+  .choice-card { min-height: 116px; }
+  .site-footer { grid-template-columns: 1fr; text-align: left; }
+  .site-footer > p { text-align: left; }
+  .footer-links { justify-content: flex-start; }
+}
+
+@media (max-width: 420px) {
+  .site-header { width: calc(100% - 16px); min-height: 54px; margin-top: 8px; padding: 6px 8px; }
+  .brand-logo { width: 34px; height: 34px; border-radius: 8px; }
+  .brand-text { font-size: 16px; }
+  .lang-switch { min-width: 38px; height: 38px; }
+  .section, .trust-strip, .site-footer { width: calc(100% - 20px); }
+  .section { padding: 48px 0; }
+  .hero { padding-top: 34px; gap: 24px; }
+  .eyebrow, .section-kicker, .form-label { font-size: 11px; }
+  h1 { font-size: 36px; margin: 14px 0 20px; }
+  h2 { font-size: 30px; margin: 14px 0 20px; }
+  h3 { font-size: 19px; }
+  .hero-lede { font-size: 15px; line-height: 1.55; }
+  .hero-actions { margin: 26px 0 16px; }
+  .hero-actions { display: grid; }
+  .hero-actions .button { width: 100%; }
+  .button { min-height: 44px; }
+  .hero-visual { aspect-ratio: auto; }
+  .journey-svg { height: auto; aspect-ratio: 720 / 520; flex: none; }
+  .visual-caption { position: static; padding: 9px 12px 11px; font-size: 10px; }
+  .visual-caption strong { font-size: 10px; margin: 0; }
+  .visual-caption span { display: none; }
+  .trust-strip div { padding: 16px 18px; }
+  .step-card { padding: 18px; }
+  .step-number { position: static; display: block; margin-bottom: 10px; }
+  .person-first-panel { padding: 22px; }
+  .person-first-panel p, .split-intro p, .demo-copy p { font-size: 15px; line-height: 1.6; }
+  .benefit-card { min-height: 0; padding: 20px; }
+  .benefit-icon { margin-bottom: 20px; }
+  .pathway-grid article { min-height: 0; padding: 22px; }
+  .pathway-grid article > span { margin-bottom: 26px; }
+  .guardrails, .demo-section { gap: 36px; }
+  .demo-section { padding-bottom: 72px; }
+  .form-shell { min-height: 0; padding: 16px; }
+  .form-progress { margin-bottom: 28px; }
+  .progress-step { width: 28px; height: 28px; }
+  .form-step h3 { font-size: 24px; line-height: 1.15; margin: 10px 0 6px; }
+  .form-step > p { margin-bottom: 20px; font-size: 15px; }
+  .choice-grid { gap: 10px; }
+  .choice-card { min-height: 0; padding: 15px; border-radius: 14px; }
+  .choice-card:not(.compact) { display: grid; grid-template-columns: 22px 1fr; column-gap: 12px; row-gap: 4px; align-items: start; }
+  .choice-card .choice-icon { grid-row: 1 / 3; margin: 2px 0 0; }
+  .choice-card small { margin-top: 6px; }
+  .choice-card:not(.compact) small { margin-top: 0; }
+  .choice-card.compact { min-height: 60px; }
+  .field-grid { gap: 12px; }
+  select, input { min-height: 48px; }
+  .form-nav { flex-wrap: wrap; }
+  .form-nav .button { flex: 1 1 auto; }
+}
+
+</style>
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <header class="site-header" id="top">
+    <a class="brand" href="#top" aria-label="CareNet AI home">
+      <img class="brand-logo" src="carenetai.png" alt="" width="42" height="42" />
+      <span class="brand-text">CareNet <b>AI</b></span>
+    </a>
+
+    <nav class="nav" aria-label="Primary navigation">
+      <a href="#how" data-i18n="navHow">Cómo funciona</a>
+      <a href="#for-you" data-i18n="navFor">Para tu práctica</a>
+      <a href="#principles" data-i18n="navPrinciples">Principios</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="lang-switch" type="button" id="langSwitch" aria-label="Switch language">EN</button>
+      <a class="button button-sm button-primary" href="#demo" data-i18n="navDemo">Agenda una demo</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero section">
+      <div class="hero-copy">
+        <div class="eyebrow" data-i18n="heroEyebrow">IA longitudinal centrada en la persona</div>
+        <h1 data-i18n="heroTitle">El cuidado no empieza en la consulta.</h1>
+        <p class="hero-lede" data-i18n="heroLede">
+          CareNet AI ayuda a tus pacientes a mantenerse conectados con su salud entre visitas, creando continuidad, contexto longitudinal y una relación que fortalece su participación en el cuidado.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#demo" data-i18n="heroPrimary">Agenda una demo</a>
+          <a class="button button-ghost" href="#how" data-i18n="heroSecondary">Ver cómo funciona</a>
+        </div>
+        <p class="hero-note" data-i18n="heroNote">Diseñado alrededor de las personas. Conectado con su cuidado.</p>
+      </div>
+
+      <div class="hero-visual" aria-label="Animated SARCI longitudinal care model">
+        <svg class="journey-svg" viewBox="0 0 720 520" role="img" aria-labelledby="journeyTitle journeyDesc">
+          <title id="journeyTitle">CareNet longitudinal care journey</title>
+          <desc id="journeyDesc">The person remains at the center of a continuous health and wellbeing trajectory. CareNet provides persistent self-assisted continuity. When a meaningful change occurs, support intensifies and the clinical network activates proportionally; as the person recovers, clinical intensity decreases while CareNet continuity remains.</desc>
+          <defs>
+            <marker id="axisArrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="rgba(218,236,244,.55)"></path>
+            </marker>
+            <radialGradient id="travelerHalo" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#5ba8ff" stop-opacity=".34"></stop>
+              <stop offset="100%" stop-color="#5ba8ff" stop-opacity="0"></stop>
+            </radialGradient>
+          </defs>
+
+          <line class="journey-axis" x1="58" y1="452" x2="58" y2="54" marker-end="url(#axisArrow)"></line>
+          <line class="journey-axis" x1="78" y1="438" x2="694" y2="438" marker-end="url(#axisArrow)"></line>
+          <text class="journey-axis-text" x="84" y="76" data-i18n="visualAxis">Salud y bienestar</text>
+          <text class="journey-axis-text" x="656" y="426" data-i18n="visualTime">Tiempo</text>
+
+          <g id="referenceLayer">
+            <line id="qualityGuide" class="journey-guide" x1="78" y1="150" x2="696" y2="150"></line>
+            <text id="qualityGuideLabel" class="journey-axis-value" x="18" y="154" data-i18n="visualUsual">habitual</text>
+          </g>
+
+          <line class="journey-current" x1="387" y1="92" x2="387" y2="420"></line>
+          <path id="journeyPathGlow" class="journey-curve-glow" d=""></path>
+          <g id="consultationGuideLayer"></g>
+          <path id="journeyPath" class="journey-curve" d=""></path>
+
+          <g id="consultationLayer"></g>
+
+          <g id="eventMarker" opacity="0">
+            <line class="journey-event-line" x1="0" y1="-76" x2="0" y2="-8"></line>
+            <circle class="journey-event-ring" cx="0" cy="-76" r="10"></circle>
+            <circle class="journey-event-dot" cx="0" cy="0" r="4"></circle>
+            <circle cx="0" cy="-76" r="9" fill="rgba(255,69,75,.16)" stroke="rgba(255,69,75,.68)" stroke-width="1.2"></circle>
+            <text class="journey-event-text" x="18" y="-79" data-i18n="visualEvent">Cambio relevante en salud</text>
+            <text class="journey-event-sub" x="18" y="-64" data-i18n="visualEventSub">CareNet reevalúa contexto y riesgo</text>
+          </g>
+
+          <g id="networkLayer" transform="translate(387 260)" opacity="0">
+            <ellipse id="networkOrbitA" class="network-orbit" cx="0" cy="0" rx="88" ry="62"></ellipse>
+            <ellipse id="networkOrbitB" class="network-orbit alt" cx="0" cy="0" rx="112" ry="78"></ellipse>
+            <g id="networkLinks"></g>
+            <g id="networkNodes"></g>
+          </g>
+          <text id="providerNetworkLabel" class="network-text" x="445" y="356" opacity="0" data-i18n="visualProviders">red clínica activada</text>
+
+          <g id="traveler" transform="translate(387 260)">
+            <circle id="travelerHalo" class="traveler-halo" cx="0" cy="0" r="24"></circle>
+            <circle id="travelerCore" class="traveler-core" cx="0" cy="0" r="10"></circle>
+            <text id="travelerLabel" class="traveler-label" x="14" y="-16" data-i18n="visualPerson">Persona</text>
+          </g>
+
+          <g id="careNetLayer" transform="translate(387 260)">
+            <ellipse class="carenet-orbit" cx="0" cy="0" rx="34" ry="24"></ellipse>
+            <circle id="careNetNode" class="carenet-orchestrator" cx="34" cy="0" r="7"></circle>
+            <text id="careNetLabel" class="carenet-text" x="46" y="-9">CareNet</text>
+          </g>
+
+          <g id="sarciState" transform="translate(424 42)">
+            <rect class="sarci-state-box" x="0" y="0" width="258" height="48" rx="12"></rect>
+            <text id="sarciStateTitle" class="sarci-state-title" x="14" y="19">Autogestión asistida</text>
+            <text id="sarciStateSub" class="sarci-state-sub" x="14" y="35">CareNet mantiene continuidad</text>
+          </g>
+        </svg>
+        <div class="visual-caption">
+          <strong data-i18n="visualCaptionTitle">SARCI — Self-Assisted Remote Care Intervention</strong>
+          <span data-i18n="visualCaption">Autogestión de la persona + apoyo continuo de CareNet + activación clínica proporcional a la necesidad.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust-strip" aria-label="Core benefits">
+      <div><span>01</span><b data-i18n="trust1">Autogestión asistida</b></div>
+      <div><span>02</span><b data-i18n="trust2">Continuidad longitudinal</b></div>
+      <div><span>03</span><b data-i18n="trust3">Activación clínica proporcional</b></div>
+      <div><span>04</span><b data-i18n="trust4">Dirección clínica humana</b></div>
+    </section>
+
+    <section class="section statement" id="principles">
+      <h2 data-i18n="statementTitle">Una persona empoderada utiliza mejor el sistema de salud.</h2>
+      <p data-i18n="statementText">
+        Cuando una persona entiende mejor su salud, reconoce cuándo actuar, participa activamente en su cuidado y llega mejor preparada a la atención médica. La continuidad y la fidelización aparecen como consecuencia de una relación asistencial que genera valor.
+      </p>
+      <div class="causal-chain" aria-label="CareNet value chain">
+        <div data-i18n="chain1">Relación</div><span>→</span>
+        <div data-i18n="chain2">Conciencia</div><span>→</span>
+        <div data-i18n="chain3">Autocuidado</div><span>→</span>
+        <div data-i18n="chain4">Mejor uso del sistema</div><span>→</span>
+        <div data-i18n="chain5">Continuidad</div>
+      </div>
+    </section>
+
+    <section class="section split" id="how">
+      <div class="split-intro">
+        <div class="section-kicker" data-i18n="howKicker">Modelo SARCI</div>
+        <h2 data-i18n="howTitle">Autogestión asistida, continuidad remota y atención clínica proporcional.</h2>
+        <p data-i18n="howText">
+          SARCI mantiene a la persona como agente activo de su salud. CareNet sostiene la continuidad entre contactos clínicos y activa o escala atención cuando el contexto supera lo que puede manejarse de forma autónoma.
+        </p>
+      </div>
+
+      <div class="steps">
+        <article class="step-card">
+          <span class="step-number">01</span>
+          <h3 data-i18n="step1Title">Define el marco clínico</h3>
+          <p data-i18n="step1Text">Objetivos, tratamiento, límites, señales de alarma y criterios de escalamiento permanecen bajo dirección médica.</p>
+        </article>
+        <article class="step-card">
+          <span class="step-number">02</span>
+          <h3 data-i18n="step2Title">Sostiene la autogestión</h3>
+          <p data-i18n="step2Text">CareNet conversa con la persona, refuerza conciencia, hábitos, adherencia y seguimiento, y mantiene memoria longitudinal entre contactos clínicos.</p>
+        </article>
+        <article class="step-card">
+          <span class="step-number">03</span>
+          <h3 data-i18n="step3Title">Detecta cambios relevantes</h3>
+          <p data-i18n="step3Text">Organiza síntomas, adherencia, hábitos, mediciones y cambios longitudinales preservando procedencia, temporalidad y nivel de certeza.</p>
+        </article>
+        <article class="step-card">
+          <span class="step-number">04</span>
+          <h3 data-i18n="step4Title">Activa atención proporcional</h3>
+          <p data-i18n="step4Text">Ante cambios relevantes, CareNet intensifica seguimiento, solicita verificación o escala al equipo tratante. Con la recuperación, la intensidad clínica disminuye sin perder continuidad.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section person-first">
+      <div class="person-first-panel">
+        <div>
+          <div class="section-kicker" data-i18n="personKicker">Antes que paciente, persona</div>
+          <h2 data-i18n="personTitle">La salud sucede la mayor parte del tiempo fuera del consultorio.</h2>
+        </div>
+        <p data-i18n="personText">
+          Una persona se convierte en paciente cuando recibe atención médica. CareNet conserva continuidad antes, durante y después de ese momento: sueño, hábitos, estrés, actividad, tratamiento, metas, contexto familiar y señales clínicas forman parte de una misma historia longitudinal.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" id="for-you">
+      <div class="section-heading centered">
+        <div class="section-kicker" data-i18n="forKicker">Para tu práctica</div>
+        <h2 data-i18n="forTitle">Más continuidad sin convertir tu agenda en una bandeja de seguimiento.</h2>
+      </div>
+
+      <div class="benefit-grid">
+        <article class="benefit-card">
+          <div class="benefit-icon">↗</div>
+          <h3 data-i18n="benefit1Title">Contexto longitudinal</h3>
+          <p data-i18n="benefit1Text">Ve más allá de la fotografía de una consulta con señales estructuradas de lo que ocurrió entre visitas.</p>
+        </article>
+        <article class="benefit-card">
+          <div class="benefit-icon">◎</div>
+          <h3 data-i18n="benefit2Title">Pacientes más involucrados</h3>
+          <p data-i18n="benefit2Text">Diseñado para apoyar conciencia, autocuidado y participación activa, no solo para recolectar respuestas.</p>
+        </article>
+        <article class="benefit-card">
+          <div class="benefit-icon">⌁</div>
+          <h3 data-i18n="benefit3Title">Seguimiento con criterio</h3>
+          <p data-i18n="benefit3Text">No todo pendiente requiere un mensaje. CareNet reevalúa contexto, recencia, riesgo y carga antes de intervenir.</p>
+        </article>
+        <article class="benefit-card">
+          <div class="benefit-icon">◇</div>
+          <h3 data-i18n="benefit4Title">Una relación que escala</h3>
+          <p data-i18n="benefit4Text">Acompaña desde prevención y bienestar hasta enfermedades crónicas o recorridos clínicos complejos.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section pathways">
+      <div class="section-heading">
+        <div class="section-kicker" data-i18n="pathKicker">Una arquitectura, múltiples recorridos</div>
+        <h2 data-i18n="pathTitle">Desde una persona sana hasta un paciente de alta complejidad.</h2>
+      </div>
+      <div class="pathway-grid">
+        <article>
+          <span data-i18n="path1Tag">Prevención</span>
+          <h3 data-i18n="path1Title">Salud y longevidad</h3>
+          <p data-i18n="path1Text">Hábitos, sueño, actividad, nutrición, factores de riesgo y metas personales.</p>
+        </article>
+        <article>
+          <span data-i18n="path2Tag">Continuidad</span>
+          <h3 data-i18n="path2Title">Enfermedad crónica</h3>
+          <p data-i18n="path2Text">Tratamiento, adherencia, síntomas, mediciones, laboratorios y seguimiento entre controles.</p>
+        </article>
+        <article>
+          <span data-i18n="path3Tag">Complejidad</span>
+          <h3 data-i18n="path3Title">Oncología y especialidades</h3>
+          <p data-i18n="path3Text">Tolerancia, funcionamiento, señales sutiles, coordinación y contexto relevante para el equipo clínico.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section guardrails">
+      <div class="guardrail-copy">
+        <div class="section-kicker" data-i18n="guardKicker">Gobernado por la atención clínica</div>
+        <h2 data-i18n="guardTitle">CareNet acompaña. Tu equipo mantiene la autoridad clínica.</h2>
+      </div>
+      <div class="guardrail-list">
+        <div><b data-i18n="guard1Title">Dirección médica</b><span data-i18n="guard1Text">Objetivos, tratamientos y límites parten del marco clínico definido.</span></div>
+        <div><b data-i18n="guard2Title">Trazabilidad</b><span data-i18n="guard2Text">El contexto longitudinal conserva evidencia, momento y nivel de certeza.</span></div>
+        <div><b data-i18n="guard3Title">Escalamiento</b><span data-i18n="guard3Text">Los cambios que requieren revisión humana pueden elevarse al equipo tratante.</span></div>
+      </div>
+    </section>
+
+    <section class="section demo-section" id="demo">
+      <div class="demo-copy">
+        <div class="section-kicker" data-i18n="demoKicker">Conoce CareNet AI</div>
+        <h2 data-i18n="demoTitle">Veamos cómo CareNet puede acompañar a tus pacientes.</h2>
+        <p data-i18n="demoText">Cuéntanos brevemente cómo brindas atención. Adaptaremos la demo a tu práctica, especialidad o modelo clínico.</p>
+        <div class="demo-points">
+          <span data-i18n="demoPoint1">✓ Demo adaptada a tu contexto</span>
+          <span data-i18n="demoPoint2">✓ Sin compromiso</span>
+          <span data-i18n="demoPoint3">✓ 4 pasos, menos de 2 minutos</span>
+        </div>
+      </div>
+
+      <div class="form-shell">
+        <div class="form-progress" aria-label="Form progress">
+          <span class="progress-step active" data-progress="1">1</span>
+          <span class="progress-line"></span>
+          <span class="progress-step" data-progress="2">2</span>
+          <span class="progress-line"></span>
+          <span class="progress-step" data-progress="3">3</span>
+          <span class="progress-line"></span>
+          <span class="progress-step" data-progress="4">4</span>
+        </div>
+
+        <form id="leadForm" novalidate>
+          <section class="form-step active" data-step="1">
+            <div class="form-label" data-i18n="formStep">Paso 1 de 4</div>
+            <h3 data-i18n="formTypeTitle">¿Cómo brindas atención?</h3>
+            <p data-i18n="formTypeText">Esto nos ayuda a personalizar la experiencia.</p>
+            <div class="choice-grid two">
+              <button class="choice-card" type="button" data-choice="provider_type" data-value="independent">
+                <span class="choice-icon">◉</span>
+                <b data-i18n="formIndependent">Médico independiente</b>
+                <small data-i18n="formIndependentSub">Consulta propia o práctica individual</small>
+              </button>
+              <button class="choice-card" type="button" data-choice="provider_type" data-value="team">
+                <span class="choice-icon">◌</span>
+                <b data-i18n="formTeam">Equipo clínico</b>
+                <small data-i18n="formTeamSub">Clínica, programa o equipo multidisciplinario</small>
+              </button>
+            </div>
+          </section>
+
+          <section class="form-step" data-step="2">
+            <div class="form-label" data-i18n="formStep2">Paso 2 de 4</div>
+            <h3 id="specialtyTitle">¿Cuál es tu especialidad?</h3>
+            <p id="specialtyText">Selecciona la opción que mejor describe tu práctica.</p>
+            <label class="select-wrap">
+              <span id="specialtyLabel">Especialidad</span>
+              <select id="specialtySelect" required></select>
+            </label>
+            <div class="form-nav">
+              <button class="button button-ghost back-btn" type="button" data-back="1" data-i18n="back">Atrás</button>
+              <button class="button button-primary next-btn" type="button" data-next="3" data-i18n="continue">Continuar</button>
+            </div>
+          </section>
+
+          <section class="form-step" data-step="3">
+            <div class="form-label" data-i18n="formStep3">Paso 3 de 4</div>
+            <h3 data-i18n="formPatientsTitle">¿Con cuántos pacientes te gustaría empezar?</h3>
+            <p data-i18n="formPatientsText">Una estimación es suficiente.</p>
+            <div class="choice-grid four">
+              <button class="choice-card compact" type="button" data-choice="patient_volume" data-value="1-25"><b>1–25</b></button>
+              <button class="choice-card compact" type="button" data-choice="patient_volume" data-value="26-100"><b>26–100</b></button>
+              <button class="choice-card compact" type="button" data-choice="patient_volume" data-value="101-500"><b>101–500</b></button>
+              <button class="choice-card compact" type="button" data-choice="patient_volume" data-value="500+"><b>500+</b></button>
+            </div>
+            <div class="form-nav">
+              <button class="button button-ghost back-btn" type="button" data-back="2" data-i18n="back">Atrás</button>
+            </div>
+          </section>
+
+          <section class="form-step" data-step="4">
+            <div class="form-label" data-i18n="formStep4">Paso 4 de 4</div>
+            <h3 data-i18n="formContactTitle">¿A quién contactamos para la demo?</h3>
+            <p data-i18n="formContactText">Usaremos estos datos únicamente para coordinar la conversación.</p>
+            <div class="field-grid">
+              <label>
+                <span data-i18n="fieldName">Nombre y apellido</span>
+                <input type="text" name="full_name" autocomplete="name" required data-i18n-placeholder="fieldNamePlaceholder" placeholder="Dra. Ana Pérez" />
+              </label>
+              <label>
+                <span data-i18n="fieldEmail">Correo profesional</span>
+                <input type="email" name="email" autocomplete="email" required placeholder="ana@clinica.com" />
+              </label>
+              <label>
+                <span data-i18n="fieldPhone">Número de teléfono</span>
+                <input type="tel" name="phone" autocomplete="tel" required data-i18n-placeholder="fieldPhonePlaceholder" placeholder="+507 6000-0000" />
+              </label>
+              <label>
+                <span data-i18n="fieldOrg">Clínica u organización</span>
+                <input type="text" name="organization" autocomplete="organization" data-i18n-placeholder="fieldOrgPlaceholder" placeholder="Nombre de tu clínica" />
+              </label>
+              <label class="full-width">
+                <span data-i18n="fieldCountry">País</span>
+                <input type="text" name="country" autocomplete="country-name" required data-i18n-placeholder="fieldCountryPlaceholder" placeholder="Panamá" />
+              </label>
+            </div>
+            <p class="privacy-note" data-i18n="privacyNote">Al continuar, aceptas que CareNet AI use estos datos para coordinar la demo. No solicitamos información clínica de pacientes en este formulario.</p>
+            <div class="form-nav">
+              <button class="button button-ghost back-btn" type="button" data-back="3" data-i18n="back">Atrás</button>
+              <button class="button button-primary" type="submit" data-i18n="bookDemo">Agenda una demo</button>
+            </div>
+          </section>
+
+          <section class="form-success" id="formSuccess" aria-live="polite">
+            <div class="success-mark">✓</div>
+            <div class="form-label" data-i18n="successLabel">Perfil recibido</div>
+            <h3 data-i18n="successTitle">Ahora agenda tu demo.</h3>
+            <p id="successSummary"></p>
+            <a class="button button-primary" id="bookingButton" href="#" target="_blank" rel="noopener" data-i18n="openCalendar">Abrir agenda</a>
+            <p class="scheduler-note" id="schedulerNote" data-i18n="schedulerNote">Conecta aquí tu enlace de Calendly, Cal.com o agenda preferida antes de publicar.</p>
+          </section>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand">
+      <img class="brand-logo" src="carenetai.png" alt="" width="34" height="34" loading="lazy" />
+      <span>CareNet AI</span>
+    </div>
+    <p data-i18n="footerTagline">Built around people. Connected to care.</p>
+    <div class="footer-links">
+      <a href="#top" data-i18n="footerTop">Volver arriba</a>
+      <a href="mailto:hello@carenetai.health">hello@carenetai.health</a>
+      <span>carenetai.health</span>
+    </div>
+  </footer>
+
+  <script>
+const BOOKING_URL = ""; // Set your Calendly / Cal.com / booking URL before publishing.
+
+const copy = {
+  es: {
+    navHow: "Cómo funciona", navFor: "Para tu práctica", navPrinciples: "Principios", navDemo: "Agenda una demo",
+    heroEyebrow: "IA longitudinal centrada en la persona",
+    heroTitle: "El cuidado no empieza en la consulta.",
+    heroLede: "CareNet AI ayuda a tus pacientes a mantenerse conectados con su salud entre visitas, creando continuidad, contexto longitudinal y una relación que fortalece su participación en el cuidado.",
+    heroPrimary: "Agenda una demo", heroSecondary: "Ver cómo funciona", heroNote: "Diseñado alrededor de las personas. Conectado con su cuidado.",
+    visualPerson: "Persona", visualPatient: "Paciente", visualAxis: "Salud y bienestar", visualTime: "Tiempo", visualUsual: "habitual", visualEvent: "Cambio relevante en salud", visualEventSub: "CareNet reevalúa contexto y riesgo", visualVisit: "Consulta clínica", visualDeviation: "cambio entre consultas", visualProviders: "red clínica activada", visualCaptionTitle: "SARCI — Self-Assisted Remote Care Intervention", visualCaption: "Autogestión de la persona + apoyo continuo de CareNet + activación clínica proporcional a la necesidad.",
+    sarciEverydayTitle: "Autogestión asistida", sarciEverydaySub: "CareNet mantiene continuidad", sarciChangeTitle: "Cambio relevante detectado", sarciChangeSub: "CareNet intensifica acompañamiento", sarciClinicalTitle: "Atención clínica activa", sarciClinicalSub: "La persona asume temporalmente el rol de paciente", sarciRecoveryTitle: "Recuperación", sarciRecoverySub: "La red clínica reduce intensidad; CareNet permanece",
+    trust1: "Autogestión asistida", trust2: "Continuidad longitudinal", trust3: "Activación clínica proporcional", trust4: "Dirección clínica humana",
+    statementKicker: "La tesis", statementTitle: "Una persona empoderada utiliza mejor el sistema de salud.",
+    statementText: "Cuando una persona entiende mejor su salud, reconoce cuándo actuar, participa activamente en su cuidado y llega mejor preparada a la atención médica. La continuidad y la fidelización aparecen como consecuencia de una relación asistencial que genera valor.",
+    chain1: "Relación", chain2: "Conciencia", chain3: "Autocuidado", chain4: "Mejor uso del sistema", chain5: "Continuidad",
+    howKicker: "Modelo SARCI", howTitle: "Autogestión asistida, continuidad remota y atención clínica proporcional.",
+    howText: "SARCI mantiene a la persona como agente activo de su salud. CareNet sostiene la continuidad entre contactos clínicos y activa o escala atención cuando el contexto supera lo que puede manejarse de forma autónoma.",
+    step1Title: "Define el marco clínico", step1Text: "Objetivos, tratamiento, límites, señales de alarma y criterios de escalamiento permanecen bajo dirección médica.",
+    step2Title: "Sostiene la autogestión", step2Text: "CareNet conversa con la persona, refuerza conciencia, hábitos, adherencia y seguimiento, y mantiene memoria longitudinal entre contactos clínicos.",
+    step3Title: "Detecta cambios relevantes", step3Text: "Organiza síntomas, adherencia, hábitos, mediciones y cambios longitudinales preservando procedencia, temporalidad y nivel de certeza.",
+    step4Title: "Activa atención proporcional", step4Text: "Ante cambios relevantes, CareNet intensifica seguimiento, solicita verificación o escala al equipo tratante. Con la recuperación, la intensidad clínica disminuye sin perder continuidad.",
+    personKicker: "Antes que paciente, persona", personTitle: "La salud sucede la mayor parte del tiempo fuera del consultorio.",
+    personText: "Una persona se convierte en paciente cuando recibe atención médica. CareNet conserva continuidad antes, durante y después de ese momento: sueño, hábitos, estrés, actividad, tratamiento, metas, contexto familiar y señales clínicas forman parte de una misma historia longitudinal.",
+    forKicker: "Para tu práctica", forTitle: "Más continuidad sin convertir tu agenda en una bandeja de seguimiento.",
+    benefit1Title: "Contexto longitudinal", benefit1Text: "Ve más allá de la fotografía de una consulta con señales estructuradas de lo que ocurrió entre visitas.",
+    benefit2Title: "Pacientes más involucrados", benefit2Text: "Diseñado para apoyar conciencia, autocuidado y participación activa, no solo para recolectar respuestas.",
+    benefit3Title: "Seguimiento con criterio", benefit3Text: "No todo pendiente requiere un mensaje. CareNet reevalúa contexto, recencia, riesgo y carga antes de intervenir.",
+    benefit4Title: "Una relación que escala", benefit4Text: "Acompaña desde prevención y bienestar hasta enfermedades crónicas o recorridos clínicos complejos.",
+    pathKicker: "Una arquitectura, múltiples recorridos", pathTitle: "Desde una persona sana hasta un paciente de alta complejidad.",
+    path1Tag: "Prevención", path1Title: "Salud y longevidad", path1Text: "Hábitos, sueño, actividad, nutrición, factores de riesgo y metas personales.",
+    path2Tag: "Continuidad", path2Title: "Enfermedad crónica", path2Text: "Tratamiento, adherencia, síntomas, mediciones, laboratorios y seguimiento entre controles.",
+    path3Tag: "Complejidad", path3Title: "Oncología y especialidades", path3Text: "Tolerancia, funcionamiento, señales sutiles, coordinación y contexto relevante para el equipo clínico.",
+    guardKicker: "Gobernado por la atención clínica", guardTitle: "CareNet acompaña. Tu equipo mantiene la autoridad clínica.",
+    guard1Title: "Dirección médica", guard1Text: "Objetivos, tratamientos y límites parten del marco clínico definido.",
+    guard2Title: "Trazabilidad", guard2Text: "El contexto longitudinal conserva evidencia, momento y nivel de certeza.",
+    guard3Title: "Escalamiento", guard3Text: "Los cambios que requieren revisión humana pueden elevarse al equipo tratante.",
+    demoKicker: "Conoce CareNet AI", demoTitle: "Veamos cómo CareNet puede acompañar a tus pacientes.",
+    demoText: "Cuéntanos brevemente cómo brindas atención. Adaptaremos la demo a tu práctica, especialidad o modelo clínico.",
+    demoPoint1: "✓ Demo adaptada a tu contexto", demoPoint2: "✓ Sin compromiso", demoPoint3: "✓ 4 pasos, menos de 2 minutos",
+    formStep: "Paso 1 de 4", formTypeTitle: "¿Cómo brindas atención?", formTypeText: "Esto nos ayuda a personalizar la experiencia.",
+    formIndependent: "Médico independiente", formIndependentSub: "Consulta propia o práctica individual", formTeam: "Equipo clínico", formTeamSub: "Clínica, programa o equipo multidisciplinario",
+    formStep2: "Paso 2 de 4", formStep3: "Paso 3 de 4", formPatientsTitle: "¿Con cuántos pacientes te gustaría empezar?", formPatientsText: "Una estimación es suficiente.",
+    formStep4: "Paso 4 de 4", formContactTitle: "¿A quién contactamos para la demo?", formContactText: "Usaremos estos datos únicamente para coordinar la conversación.",
+    fieldName: "Nombre y apellido", fieldNamePlaceholder: "Dra. Ana Pérez", fieldEmail: "Correo profesional", fieldPhone: "Número de teléfono", fieldPhonePlaceholder: "+507 6000-0000", fieldOrg: "Clínica u organización", fieldOrgPlaceholder: "Nombre de tu clínica", fieldCountry: "País", fieldCountryPlaceholder: "Panamá",
+    privacyNote: "Al continuar, aceptas que CareNet AI use estos datos para coordinar la demo. No solicitamos información clínica de pacientes en este formulario.",
+    back: "Atrás", continue: "Continuar", bookDemo: "Agenda una demo", successLabel: "Perfil recibido", successTitle: "Ahora agenda tu demo.", openCalendar: "Abrir agenda", schedulerNote: "Conecta aquí tu enlace de Calendly, Cal.com o agenda preferida antes de publicar.",
+    footerTagline: "Built around people. Connected to care.", footerTop: "Volver arriba",
+    independentTitle: "¿Cuál es tu especialidad?", independentText: "Selecciona la opción que mejor describe tu práctica.", independentLabel: "Especialidad",
+    teamTitle: "¿En qué área se enfoca tu equipo?", teamText: "Selecciona el dominio clínico o modelo de atención principal.", teamLabel: "Área clínica",
+    selectPlaceholder: "Selecciona una opción",
+    successSummary: (d) => `Gracias, ${d.full_name}. Prepararemos una demo para ${d.patient_volume} pacientes, adaptada a ${d.focus}.`,
+    schedulerMissing: "El perfil quedó listo. Antes de publicar, configura BOOKING_URL en script.js para conectar tu agenda real."
+  },
+  en: {
+    navHow: "How it works", navFor: "For your practice", navPrinciples: "Principles", navDemo: "Book a demo",
+    heroEyebrow: "Longitudinal AI centered on the person",
+    heroTitle: "Care doesn't start in the consultation.",
+    heroLede: "CareNet AI helps your patients stay connected to their health between visits—building continuity, longitudinal context, and a relationship that supports active participation in care.",
+    heroPrimary: "Book a demo", heroSecondary: "See how it works", heroNote: "Built around people. Connected to care.",
+    visualPerson: "Person", visualPatient: "Patient", visualAxis: "health & wellbeing", visualTime: "time", visualUsual: "usual", visualEvent: "Meaningful health change", visualEventSub: "CareNet reassesses context and risk", visualVisit: "Clinical encounter", visualDeviation: "change between encounters", visualProviders: "clinical network activated", visualCaptionTitle: "SARCI — Self-Assisted Remote Care Intervention", visualCaption: "Person-led self-management + continuous CareNet support + clinical activation proportional to need.",
+    sarciEverydayTitle: "Self-assisted management", sarciEverydaySub: "CareNet maintains continuity", sarciChangeTitle: "Meaningful change detected", sarciChangeSub: "CareNet intensifies support", sarciClinicalTitle: "Clinical care active", sarciClinicalSub: "The person temporarily assumes the patient role", sarciRecoveryTitle: "Recovery", sarciRecoverySub: "Clinical intensity decreases; CareNet remains",
+    trust1: "Assisted self-management", trust2: "Longitudinal continuity", trust3: "Proportional clinical activation", trust4: "Human clinical direction",
+    statementKicker: "The thesis", statementTitle: "An empowered person uses the healthcare system better.",
+    statementText: "When people understand their health, recognize when to act, participate in their care, and arrive better prepared for medical attention, continuity and loyalty emerge as consequences of a care relationship that creates real value.",
+    chain1: "Relationship", chain2: "Awareness", chain3: "Self-care", chain4: "Better healthcare use", chain5: "Continuity",
+    howKicker: "The SARCI model", howTitle: "Assisted self-management, remote continuity, and proportional clinical care.",
+    howText: "SARCI keeps the person as an active agent in their health. CareNet maintains continuity between clinical encounters and activates or escalates care when context exceeds what can be managed autonomously.",
+    step1Title: "Set the clinical framework", step1Text: "Goals, treatment, boundaries, red flags, and escalation criteria remain under medical direction.",
+    step2Title: "Support self-management", step2Text: "CareNet engages the person, reinforces awareness, habits, adherence, and follow-up, and maintains longitudinal memory between clinical encounters.",
+    step3Title: "Detect meaningful change", step3Text: "It organizes symptoms, adherence, habits, measurements, and longitudinal changes while preserving provenance, timing, and degree of certainty.",
+    step4Title: "Activate care proportionally", step4Text: "When meaningful changes occur, CareNet intensifies follow-up, requests verification, or escalates to the treating team. As the person recovers, clinical intensity decreases without losing continuity.",
+    personKicker: "A person before a patient", personTitle: "Health happens mostly outside the clinic.",
+    personText: "A person becomes a patient while receiving medical care. CareNet preserves continuity before, during, and after that moment: sleep, habits, stress, activity, treatment, goals, family context, and clinical signals become part of one longitudinal story.",
+    forKicker: "For your practice", forTitle: "More continuity without turning your schedule into a follow-up inbox.",
+    benefit1Title: "Longitudinal context", benefit1Text: "Go beyond the snapshot of a visit with structured signals about what happened between appointments.",
+    benefit2Title: "More engaged patients", benefit2Text: "Designed to support awareness, self-care, and active participation—not just collect answers.",
+    benefit3Title: "Judgment-driven follow-up", benefit3Text: "Not every open item needs a message. CareNet reassesses context, recency, risk, and contact load before acting.",
+    benefit4Title: "A relationship that scales", benefit4Text: "Support prevention and wellness through chronic disease and complex clinical journeys.",
+    pathKicker: "One architecture, multiple journeys", pathTitle: "From a healthy person to a high-complexity patient.",
+    path1Tag: "Prevention", path1Title: "Health & longevity", path1Text: "Habits, sleep, activity, nutrition, risk factors, and personal goals.",
+    path2Tag: "Continuity", path2Title: "Chronic disease", path2Text: "Treatment, adherence, symptoms, measurements, labs, and follow-up between check-ins.",
+    path3Tag: "Complexity", path3Title: "Oncology & specialties", path3Text: "Tolerance, function, subtle signals, coordination, and clinically relevant context.",
+    guardKicker: "Governed by clinical care", guardTitle: "CareNet supports. Your team keeps clinical authority.",
+    guard1Title: "Medical direction", guard1Text: "Goals, treatments, and boundaries start from the defined clinical framework.",
+    guard2Title: "Traceability", guard2Text: "Longitudinal context preserves evidence, timing, and degree of certainty.",
+    guard3Title: "Escalation", guard3Text: "Changes requiring human review can be surfaced to the treating team.",
+    demoKicker: "Meet CareNet AI", demoTitle: "Let's see how CareNet can support your patients.",
+    demoText: "Tell us briefly how you provide care. We'll tailor the demo to your practice, specialty, or clinical model.",
+    demoPoint1: "✓ Demo tailored to your context", demoPoint2: "✓ No commitment", demoPoint3: "✓ 4 steps, under 2 minutes",
+    formStep: "Step 1 of 4", formTypeTitle: "How do you provide care?", formTypeText: "This helps us personalize the experience.",
+    formIndependent: "Independent physician", formIndependentSub: "Own office or individual practice", formTeam: "Clinical team", formTeamSub: "Clinic, program, or multidisciplinary team",
+    formStep2: "Step 2 of 4", formStep3: "Step 3 of 4", formPatientsTitle: "How many patients would you like to start with?", formPatientsText: "An estimate is enough.",
+    formStep4: "Step 4 of 4", formContactTitle: "Who should we contact for the demo?", formContactText: "We'll use these details only to coordinate the conversation.",
+    fieldName: "Full name", fieldNamePlaceholder: "Dr. Ana Perez", fieldEmail: "Professional email", fieldPhone: "Phone number", fieldPhonePlaceholder: "+1 555 000 0000", fieldOrg: "Clinic or organization", fieldOrgPlaceholder: "Your clinic name", fieldCountry: "Country", fieldCountryPlaceholder: "United States",
+    privacyNote: "By continuing, you agree that CareNet AI may use these details to coordinate the demo. We do not request patient clinical information in this form.",
+    back: "Back", continue: "Continue", bookDemo: "Book a demo", successLabel: "Profile received", successTitle: "Now book your demo.", openCalendar: "Open calendar", schedulerNote: "Connect your Calendly, Cal.com, or preferred scheduling link here before publishing.",
+    footerTagline: "Built around people. Connected to care.", footerTop: "Back to top",
+    independentTitle: "What is your specialty?", independentText: "Choose the option that best describes your practice.", independentLabel: "Specialty",
+    teamTitle: "What does your clinical team focus on?", teamText: "Choose your main clinical domain or care model.", teamLabel: "Clinical focus",
+    selectPlaceholder: "Select an option",
+    successSummary: (d) => `Thanks, ${d.full_name}. We'll prepare a demo for ${d.patient_volume} patients, tailored to ${d.focus}.`,
+    schedulerMissing: "Your profile is ready. Before publishing, set BOOKING_URL in script.js to connect your live scheduling page."
+  }
+};
+
+const specialties = {
+  es: ["Medicina general", "Medicina familiar", "Medicina interna", "Cardiología", "Endocrinología", "Oncología", "Geriatría", "Neurología", "Psiquiatría", "Neumología", "Nefrología", "Gastroenterología", "Reumatología", "Ginecología y obstetricia", "Urología", "Pediatría", "Otra especialidad"],
+  en: ["General medicine", "Family medicine", "Internal medicine", "Cardiology", "Endocrinology", "Oncology", "Geriatrics", "Neurology", "Psychiatry", "Pulmonology", "Nephrology", "Gastroenterology", "Rheumatology", "Obstetrics & gynecology", "Urology", "Pediatrics", "Other specialty"]
+};
+
+const teamDomains = {
+  es: ["Atención primaria", "Medicina de longevidad", "Medicina preventiva", "Salud de la mujer", "Salud metabólica", "Enfermedades crónicas", "Oncología", "Salud cardiovascular", "Salud mental", "Envejecimiento saludable", "Programa corporativo de salud", "Otro modelo clínico"],
+  en: ["Primary care", "Longevity medicine", "Preventive medicine", "Women's health", "Metabolic health", "Chronic disease management", "Oncology", "Cardiovascular health", "Mental health", "Healthy aging", "Corporate health program", "Other clinical model"]
+};
+
+let lang = "es";
+let formData = { provider_type: "", focus: "", patient_volume: "" };
+
+const langSwitch = document.getElementById("langSwitch");
+const leadForm = document.getElementById("leadForm");
+const specialtySelect = document.getElementById("specialtySelect");
+const specialtyTitle = document.getElementById("specialtyTitle");
+const specialtyText = document.getElementById("specialtyText");
+const specialtyLabel = document.getElementById("specialtyLabel");
+
+function translatePage() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+    const value = copy[lang][key];
+    if (typeof value === "string") el.textContent = value;
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (copy[lang][key]) el.placeholder = copy[lang][key];
+  });
+  langSwitch.textContent = lang === "es" ? "EN" : "ES";
+  renderFocusStep();
+}
+
+langSwitch.addEventListener("click", () => {
+  lang = lang === "es" ? "en" : "es";
+  translatePage();
+});
+
+function goToStep(step) {
+  document.querySelectorAll(".form-step").forEach(s => s.classList.toggle("active", Number(s.dataset.step) === step));
+  document.querySelectorAll(".progress-step").forEach(p => {
+    const n = Number(p.dataset.progress);
+    p.classList.toggle("active", n === step);
+    p.classList.toggle("done", n < step);
+  });
+}
+
+function renderFocusStep() {
+  if (!formData.provider_type) return;
+  const independent = formData.provider_type === "independent";
+  specialtyTitle.textContent = copy[lang][independent ? "independentTitle" : "teamTitle"];
+  specialtyText.textContent = copy[lang][independent ? "independentText" : "teamText"];
+  specialtyLabel.textContent = copy[lang][independent ? "independentLabel" : "teamLabel"];
+  const options = independent ? specialties[lang] : teamDomains[lang];
+  const previous = formData.focus;
+  specialtySelect.innerHTML = `<option value="">${copy[lang].selectPlaceholder}</option>` + options.map(x => `<option value="${x.replace(/"/g, '&quot;')}">${x}</option>`).join("");
+  if (options.includes(previous)) specialtySelect.value = previous;
+  else formData.focus = "";
+}
+
+document.querySelectorAll('[data-choice="provider_type"]').forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll('[data-choice="provider_type"]').forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+    formData.provider_type = btn.dataset.value;
+    formData.focus = "";
+    renderFocusStep();
+    setTimeout(() => goToStep(2), 130);
+  });
+});
+
+specialtySelect.addEventListener("change", () => {
+  formData.focus = specialtySelect.value;
+  specialtySelect.classList.remove("field-error");
+});
+
+document.querySelectorAll('[data-choice="patient_volume"]').forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll('[data-choice="patient_volume"]').forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+    formData.patient_volume = btn.dataset.value;
+    setTimeout(() => goToStep(4), 130);
+  });
+});
+
+document.querySelectorAll(".back-btn").forEach(btn => btn.addEventListener("click", () => goToStep(Number(btn.dataset.back))));
+document.querySelectorAll(".next-btn").forEach(btn => btn.addEventListener("click", () => {
+  if (!specialtySelect.value) {
+    specialtySelect.classList.add("field-error");
+    specialtySelect.focus();
+    return;
+  }
+  formData.focus = specialtySelect.value;
+  goToStep(Number(btn.dataset.next));
+}));
+
+leadForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const inputs = [...leadForm.querySelectorAll('.form-step[data-step="4"] input[required]')];
+  let valid = true;
+  inputs.forEach(input => {
+    const ok = input.checkValidity() && input.value.trim();
+    input.classList.toggle("field-error", !ok);
+    if (!ok && valid) input.focus();
+    valid = valid && ok;
+  });
+  if (!valid) return;
+
+  const fd = new FormData(leadForm);
+  formData = { ...formData, ...Object.fromEntries(fd.entries()) };
+  document.querySelectorAll(".form-step").forEach(s => s.classList.remove("active"));
+  document.getElementById("formSuccess").classList.add("active");
+  document.getElementById("successSummary").textContent = copy[lang].successSummary(formData);
+  document.querySelectorAll(".progress-step").forEach(p => { p.classList.remove("active"); p.classList.add("done"); });
+
+  const bookingButton = document.getElementById("bookingButton");
+  const schedulerNote = document.getElementById("schedulerNote");
+  if (BOOKING_URL) {
+    bookingButton.href = BOOKING_URL;
+    schedulerNote.style.display = "none";
+  } else {
+    bookingButton.href = "mailto:hello@carenetai.health?subject=CareNet%20AI%20Demo";
+    bookingButton.removeAttribute("target");
+    schedulerNote.textContent = copy[lang].schedulerMissing;
+  }
+
+  // Integration point: send formData to your CRM/backend before opening the scheduler.
+  console.log("CareNet lead", formData);
+});
+
+
+function initJourneyAnimation() {
+  const path = document.getElementById("journeyPath");
+  const glow = document.getElementById("journeyPathGlow");
+  const travelerLabel = document.getElementById("travelerLabel");
+  const travelerHalo = document.getElementById("travelerHalo");
+  const travelerCore = document.getElementById("travelerCore");
+  const networkLayer = document.getElementById("networkLayer");
+  const networkLinks = document.getElementById("networkLinks");
+  const networkNodes = document.getElementById("networkNodes");
+  const careNetNode = document.getElementById("careNetNode");
+  const careNetLabel = document.getElementById("careNetLabel");
+  const providerNetworkLabel = document.getElementById("providerNetworkLabel");
+  const sarciStateTitle = document.getElementById("sarciStateTitle");
+  const sarciStateSub = document.getElementById("sarciStateSub");
+  const eventMarker = document.getElementById("eventMarker");
+  const consultationLayer = document.getElementById("consultationLayer");
+  const consultationGuideLayer = document.getElementById("consultationGuideLayer");
+  const qualityGuide = document.getElementById("qualityGuide");
+  const qualityGuideLabel = document.getElementById("qualityGuideLabel");
+  const heroVisual = document.querySelector(".hero-visual");
+  if (!path || !glow || !travelerHalo || !travelerCore || !networkLayer || !careNetNode || !heroVisual) return;
+
+  const centerX = 387;
+  const centerY = 260;
+  const plotLeft = 82;
+  const plotRight = 696;
+  const baseline = 0.90;
+  const upperGuide = 1.0;
+  const qualityScale = 560;
+  const visibleSpan = 0.56;
+  const eventPhase = 0.31;
+  const activationStart = 0.31;
+  const activationPeak = 0.43;
+  const recoveryStart = 0.67;
+  const activationEnd = 0.79;
+  const consultationPhases = [0.14, 0.48];
+
+  const providerCount = 7;
+  const providerRadii = [76, 92, 83, 101, 86, 95, 108];
+  const providerYScale = [.72, .60, .68, .58, .72, .64, .56];
+  const providerSpeeds = [.72, -.49, .56, -.61, .43, -.52, .37];
+  const providerPhases = [0, .92, 1.84, 2.76, 3.68, 4.6, 5.52];
+  const providerEls = [];
+  const radialLinks = [];
+  const meshLinks = [];
+  const consultationEls = [];
+  const consultationGuideEls = [];
+
+  const ns = "http://www.w3.org/2000/svg";
+  consultationPhases.forEach(() => {
+    const guide = document.createElementNS(ns, "g");
+    guide.setAttribute("opacity", "0");
+    guide.innerHTML = `
+      <line class="journey-snapshot-line" data-snapshot-line></line>
+      <circle class="journey-snapshot-projection" r="4" data-snapshot-projection></circle>
+      <line class="journey-deviation-line" data-deviation-line></line>
+      <line class="journey-deviation-cap" data-deviation-start></line>
+      <line class="journey-deviation-cap" data-deviation-end></line>
+      <text class="journey-deviation-text" data-deviation-label></text>`;
+    consultationGuideLayer.appendChild(guide);
+    consultationGuideEls.push(guide);
+
+    const marker = document.createElementNS(ns, "g");
+    marker.setAttribute("opacity", "0");
+    marker.innerHTML = `
+      <line class="journey-visit-line" x1="0" y1="-62" x2="0" y2="-7"></line>
+      <circle class="journey-visit-dot" cx="0" cy="0" r="3.6"></circle>
+      <circle class="journey-visit-provider" cx="0" cy="-72" r="9"></circle>
+      <path class="journey-visit-cross" d="M-4,-72 H4 M0,-76 V-68"></path>
+      <text class="journey-visit-text" x="13" y="-69" data-visit-label></text>`;
+    consultationLayer.appendChild(marker);
+    consultationEls.push(marker);
+  });
+
+  for (let i = 0; i < providerCount; i++) {
+    const radial = document.createElementNS(ns, "line");
+    radial.setAttribute("class", "network-link");
+    networkLinks.appendChild(radial);
+    radialLinks.push(radial);
+
+    const mesh = document.createElementNS(ns, "line");
+    mesh.setAttribute("class", "network-link mesh");
+    networkLinks.appendChild(mesh);
+    meshLinks.push(mesh);
+
+    const circle = document.createElementNS(ns, "circle");
+    circle.setAttribute("r", i % 2 ? "6" : "5.3");
+    circle.setAttribute("class", `provider-node${i % 2 ? " alt" : ""}`);
+    networkNodes.appendChild(circle);
+    providerEls.push(circle);
+  }
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let running = true;
+  let start = performance.now();
+  let lastMode = "";
+  let currentPhase = 0;
+
+  const clamp = (n, min = 0, max = 1) => Math.max(min, Math.min(max, n));
+  const smooth = n => n * n * (3 - 2 * n);
+  const mod1 = n => ((n % 1) + 1) % 1;
+  const signedPhaseDistance = (a, b) => {
+    let d = a - b;
+    if (d > .5) d -= 1;
+    if (d < -.5) d += 1;
+    return d;
+  };
+
+  const keyframes = [
+    [0.00, 0.90],
+    [0.10, 0.91],
+    [0.20, 0.95],
+    [0.31, 0.97],
+    [0.46, 0.82],
+    [0.58, 0.72],
+    [0.66, 0.74],
+    [0.78, 0.91],
+    [0.88, 0.98],
+    [1.00, 0.90]
+  ];
+
+  function qualityAt(phase) {
+    phase = mod1(phase);
+    for (let i = 0; i < keyframes.length - 1; i++) {
+      const [x0, y0] = keyframes[i];
+      const [x1, y1] = keyframes[i + 1];
+      if (phase >= x0 && phase <= x1) {
+        const u = smooth((phase - x0) / (x1 - x0));
+        return y0 + (y1 - y0) * u;
+      }
+    }
+    return baseline;
+  }
+
+  function networkOpacityFor(phase) {
+    if (phase < activationStart || phase > activationEnd) return 0;
+    if (phase < activationPeak) return smooth((phase - activationStart) / (activationPeak - activationStart));
+    if (phase > recoveryStart) return 1 - smooth((phase - recoveryStart) / (activationEnd - recoveryStart));
+    return 1;
+  }
+
+  function screenY(q, currentQ) {
+    return centerY - (q - currentQ) * qualityScale;
+  }
+
+  function updateReferenceLines(currentQ) {
+    const guideY = screenY(upperGuide, currentQ);
+    qualityGuide.setAttribute("y1", guideY.toFixed(2));
+    qualityGuide.setAttribute("y2", guideY.toFixed(2));
+    qualityGuideLabel.setAttribute("y", (guideY + 4).toFixed(2));
+  }
+
+  function updateSarciState(phase) {
+    let titleKey = "sarciEverydayTitle";
+    let subKey = "sarciEverydaySub";
+    if (phase >= eventPhase && phase < activationPeak) {
+      titleKey = "sarciChangeTitle";
+      subKey = "sarciChangeSub";
+    } else if (phase >= activationPeak && phase < recoveryStart) {
+      titleKey = "sarciClinicalTitle";
+      subKey = "sarciClinicalSub";
+    } else if (phase >= recoveryStart && phase < activationEnd) {
+      titleKey = "sarciRecoveryTitle";
+      subKey = "sarciRecoverySub";
+    }
+    if (sarciStateTitle) sarciStateTitle.textContent = copy[lang][titleKey];
+    if (sarciStateSub) sarciStateSub.textContent = copy[lang][subKey];
+  }
+
+  function updatePatientColor(phase) {
+    const healthy = [110, 231, 212];
+    const alarm = [255, 69, 75];
+    const intervention = [255, 138, 76];
+    const mix = (from, to, amount) => from.map((channel, i) => Math.round(channel + (to[i] - channel) * amount));
+    let color = healthy;
+
+    if (phase >= eventPhase && phase < activationPeak) {
+      color = mix(alarm, intervention, smooth((phase - eventPhase) / (activationPeak - eventPhase)));
+    } else if (phase >= activationPeak && phase < recoveryStart) {
+      color = intervention;
+    } else if (phase >= recoveryStart && phase < activationEnd) {
+      color = mix(intervention, healthy, smooth((phase - recoveryStart) / (activationEnd - recoveryStart)));
+    }
+
+    const rgb = `rgb(${color.join(",")})`;
+    travelerCore.style.stroke = rgb;
+    travelerCore.style.filter = `drop-shadow(0 0 10px rgba(${color.join(",")},.48))`;
+    travelerHalo.style.fill = `rgba(${color.join(",")},.16)`;
+    travelerHalo.style.stroke = `rgba(${color.join(",")},.32)`;
+  }
+
+  function updateCurve(phase, currentQ) {
+    const samples = 120;
+    const width = plotRight - plotLeft;
+    let d = "";
+    for (let i = 0; i <= samples; i++) {
+      const x = plotLeft + width * (i / samples);
+      const relative = ((x - centerX) / width) * visibleSpan;
+      const q = qualityAt(phase + relative);
+      const y = screenY(q, currentQ);
+      d += `${i === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)} `;
+    }
+    path.setAttribute("d", d.trim());
+    glow.setAttribute("d", d.trim());
+  }
+
+  function updateEventMarker(phase, currentQ) {
+    const rel = signedPhaseDistance(eventPhase, phase);
+    const width = plotRight - plotLeft;
+    const x = centerX + (rel / visibleSpan) * width;
+    const y = screenY(qualityAt(eventPhase), currentQ);
+    const inView = x > plotLeft + 16 && x < plotRight - 120;
+    const proximity = clamp(1 - Math.abs(rel) / .24);
+    eventMarker.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)})`);
+    eventMarker.setAttribute("opacity", inView ? (.28 + .72 * proximity).toFixed(3) : "0");
+  }
+
+  function updateConsultations(phase, currentQ) {
+    const width = plotRight - plotLeft;
+    let latestVisitIndex = 0;
+    let latestVisitAge = Infinity;
+    consultationPhases.forEach((visitPhase, index) => {
+      const age = mod1(phase - visitPhase);
+      if (age < latestVisitAge) {
+        latestVisitAge = age;
+        latestVisitIndex = index;
+      }
+    });
+
+    consultationPhases.forEach((visitPhase, index) => {
+      const rel = signedPhaseDistance(visitPhase, phase);
+      const x = centerX + (rel / visibleSpan) * width;
+      const y = screenY(qualityAt(visitPhase), currentQ);
+      const inView = x > plotLeft + 8 && x < plotRight - 96;
+      const alignInward = x > plotRight - 190;
+      consultationEls[index].querySelectorAll("text").forEach(label => {
+        label.setAttribute("x", alignInward ? "-13" : "13");
+        label.setAttribute("text-anchor", alignInward ? "end" : "start");
+      });
+      consultationEls[index].querySelector("[data-visit-label]").setAttribute("y", alignInward ? "-45" : "-69");
+      consultationEls[index].setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)})`);
+      consultationEls[index].setAttribute("opacity", inView ? "1" : "0");
+
+      const guide = consultationGuideEls[index];
+      const visitAge = mod1(phase - visitPhase);
+      const guideOriginX = centerX - (visitAge / visibleSpan) * width;
+      const guideStartX = Math.max(plotLeft, guideOriginX);
+      const showGuide = index === latestVisitIndex && visitAge > .01;
+      const deviationVisible = Math.abs(y - centerY) > 7;
+      const snapshotLine = guide.querySelector("[data-snapshot-line]");
+      const projection = guide.querySelector("[data-snapshot-projection]");
+      const deviationLine = guide.querySelector("[data-deviation-line]");
+      const deviationStart = guide.querySelector("[data-deviation-start]");
+      const deviationEnd = guide.querySelector("[data-deviation-end]");
+      const deviationLabel = guide.querySelector("[data-deviation-label]");
+
+      snapshotLine.setAttribute("x1", guideStartX.toFixed(2));
+      snapshotLine.setAttribute("x2", centerX);
+      snapshotLine.setAttribute("y1", y.toFixed(2));
+      snapshotLine.setAttribute("y2", y.toFixed(2));
+      projection.setAttribute("cx", centerX);
+      projection.setAttribute("cy", y.toFixed(2));
+      deviationLine.setAttribute("x1", centerX);
+      deviationLine.setAttribute("x2", centerX);
+      deviationLine.setAttribute("y1", y.toFixed(2));
+      deviationLine.setAttribute("y2", centerY);
+      deviationStart.setAttribute("x1", centerX - 5);
+      deviationStart.setAttribute("x2", centerX + 5);
+      deviationStart.setAttribute("y1", y.toFixed(2));
+      deviationStart.setAttribute("y2", y.toFixed(2));
+      deviationEnd.setAttribute("x1", centerX - 5);
+      deviationEnd.setAttribute("x2", centerX + 5);
+      deviationEnd.setAttribute("y1", centerY);
+      deviationEnd.setAttribute("y2", centerY);
+      deviationLabel.setAttribute("x", centerX - 10);
+      deviationLabel.setAttribute("y", ((y + centerY) / 2 + 3).toFixed(2));
+      deviationLine.setAttribute("opacity", deviationVisible ? "1" : "0");
+      deviationStart.setAttribute("opacity", deviationVisible ? "1" : "0");
+      deviationEnd.setAttribute("opacity", deviationVisible ? "1" : "0");
+      deviationLabel.setAttribute("opacity", deviationVisible ? "1" : "0");
+      guide.setAttribute("opacity", showGuide ? "1" : "0");
+    });
+  }
+
+  function updateCareNet(seconds) {
+    const angle = seconds * 1.05;
+    const x = Math.cos(angle) * 34;
+    const y = Math.sin(angle) * 24;
+    careNetNode.setAttribute("cx", x.toFixed(2));
+    careNetNode.setAttribute("cy", y.toFixed(2));
+    careNetLabel.setAttribute("x", (x + 12).toFixed(2));
+    careNetLabel.setAttribute("y", (y + 18).toFixed(2));
+    return {x, y};
+  }
+
+  function updateProviderNetwork(opacity, seconds, careNetPosition) {
+    networkLayer.setAttribute("opacity", opacity.toFixed(3));
+    providerNetworkLabel.setAttribute("opacity", opacity.toFixed(3));
+    const scale = .70 + .30 * opacity;
+    networkLayer.setAttribute("transform", `translate(${centerX} ${centerY}) scale(${scale.toFixed(3)})`);
+
+    const coords = [];
+    for (let i = 0; i < providerCount; i++) {
+      const a = providerPhases[i] + seconds * providerSpeeds[i];
+      const x = Math.cos(a) * providerRadii[i];
+      const y = Math.sin(a) * providerRadii[i] * providerYScale[i];
+      coords.push({x, y});
+      providerEls[i].setAttribute("cx", x.toFixed(2));
+      providerEls[i].setAttribute("cy", y.toFixed(2));
+      radialLinks[i].setAttribute("x1", careNetPosition.x.toFixed(2));
+      radialLinks[i].setAttribute("y1", careNetPosition.y.toFixed(2));
+      radialLinks[i].setAttribute("x2", x.toFixed(2));
+      radialLinks[i].setAttribute("y2", y.toFixed(2));
+    }
+    for (let i = 0; i < providerCount; i++) {
+      const j = (i + 1) % providerCount;
+      meshLinks[i].setAttribute("x1", coords[i].x.toFixed(2));
+      meshLinks[i].setAttribute("y1", coords[i].y.toFixed(2));
+      meshLinks[i].setAttribute("x2", coords[j].x.toFixed(2));
+      meshLinks[i].setAttribute("y2", coords[j].y.toFixed(2));
+    }
+  }
+
+  function render(phase, seconds) {
+    currentPhase = phase;
+    const currentQ = qualityAt(phase);
+    updateCurve(phase, currentQ);
+    updateReferenceLines(currentQ);
+    updatePatientColor(phase);
+    updateSarciState(phase);
+    updateEventMarker(phase, currentQ);
+    updateConsultations(phase, currentQ);
+    const careNetPosition = updateCareNet(seconds);
+
+    const networkOpacity = networkOpacityFor(phase);
+    updateProviderNetwork(networkOpacity, seconds, careNetPosition);
+
+    const mode = networkOpacity > .28 ? "patient" : "person";
+    if (mode !== lastMode) {
+      travelerLabel.textContent = copy[lang][mode === "patient" ? "visualPatient" : "visualPerson"];
+      lastMode = mode;
+    }
+  }
+
+  function frame(now) {
+    if (!running) return;
+    const cycle = 18000;
+    const phase = ((now - start) % cycle) / cycle;
+    render(phase, (now - start) / 1000);
+    requestAnimationFrame(frame);
+  }
+
+  if (prefersReducedMotion) {
+    render(.405, 0);
+  } else {
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries[0]?.isIntersecting;
+      if (visible && !running) {
+        running = true;
+        start = performance.now();
+        requestAnimationFrame(frame);
+      } else if (!visible) {
+        running = false;
+      }
+    }, { threshold: .08 });
+    observer.observe(heroVisual);
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener("carenet-language-change", () => {
+    consultationEls.forEach(marker => {
+      marker.querySelector("[data-visit-label]").textContent = copy[lang].visualVisit;
+    });
+    consultationGuideEls.forEach(guide => {
+      guide.querySelector("[data-deviation-label]").textContent = copy[lang].visualDeviation;
+    });
+    updateSarciState(currentPhase);
+    const currentMode = networkOpacityFor(currentPhase) > .28 ? "patient" : "person";
+    travelerLabel.textContent = copy[lang][currentMode === "patient" ? "visualPatient" : "visualPerson"];
+    lastMode = currentMode;
+  });
+
+  window.dispatchEvent(new Event("carenet-language-change"));
+}
+
+const originalTranslatePage = translatePage;
+translatePage = function() {
+  originalTranslatePage();
+  window.dispatchEvent(new Event("carenet-language-change"));
+};
+
+initJourneyAnimation();
+translatePage();
+
+</script>
+</body>
+</html>
