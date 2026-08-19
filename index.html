@@ -263,6 +263,7 @@ input::placeholder { color: #5f7886; }
 .form-success h3 { font-size: 30px; margin: 12px 0; }
 .form-success p { color: var(--muted); max-width: 520px; margin: 0 auto 24px; }
 .scheduler-note { font-size: 12px; color: var(--muted-2) !important; margin-top: 16px !important; }
+.form-error { color: var(--danger) !important; font-size: 13px !important; margin: 18px 0 0 !important; }
 
 .site-footer { width: min(calc(100% - 40px), var(--max)); margin: 0 auto 30px; border-top: 1px solid var(--line); padding: 34px 0 10px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: center; color: var(--muted); font-size: 13px; }
 .site-footer > p { margin: 0; text-align: center; }
@@ -704,6 +705,7 @@ input::placeholder { color: #5f7886; }
               </label>
             </div>
             <p class="privacy-note" data-i18n="privacyNote">Al continuar, aceptas que CareNet AI use estos datos para coordinar la demo. No solicitamos información clínica de pacientes en este formulario.</p>
+            <p class="form-error" id="formError" role="alert" hidden></p>
             <div class="form-nav">
               <button class="button button-ghost back-btn" type="button" data-back="3" data-i18n="back">Atrás</button>
               <button class="button button-primary" type="submit" data-i18n="bookDemo">Agenda una demo</button>
@@ -715,8 +717,7 @@ input::placeholder { color: #5f7886; }
             <div class="form-label" data-i18n="successLabel">Perfil recibido</div>
             <h3 data-i18n="successTitle">Ahora agenda tu demo.</h3>
             <p id="successSummary"></p>
-            <a class="button button-primary" id="bookingButton" href="#" target="_blank" rel="noopener" data-i18n="openCalendar">Abrir agenda</a>
-            <p class="scheduler-note" id="schedulerNote" data-i18n="schedulerNote">Conecta aquí tu enlace de Calendly, Cal.com o agenda preferida antes de publicar.</p>
+            <p class="scheduler-note" data-i18n="emailDeliveryNote">Recibimos tu solicitud y te contactaremos para coordinar la demo.</p>
           </section>
         </form>
       </div>
@@ -736,7 +737,7 @@ input::placeholder { color: #5f7886; }
   </footer>
 
   <script>
-const BOOKING_URL = "https://cal.com/jorge-lezcano-vmpb1w/demo-carenet-ai";
+const FORM_ENDPOINT = "https://formsubmit.co/ajax/info@carenetai.health";
 
 const copy = {
   es: {
@@ -781,13 +782,13 @@ const copy = {
     formStep4: "Paso 4 de 4", formContactTitle: "¿A quién contactamos para la demo?", formContactText: "Usaremos estos datos únicamente para coordinar la conversación.",
     fieldName: "Nombre y apellido", fieldNamePlaceholder: "Dra. Ana Pérez", fieldEmail: "Correo profesional", fieldPhone: "Número de teléfono", fieldPhonePlaceholder: "+507 6000-0000", fieldOrg: "Clínica u organización", fieldOrgPlaceholder: "Nombre de tu clínica", fieldCountry: "País", fieldCountryPlaceholder: "Panamá",
     privacyNote: "Al continuar, aceptas que CareNet AI use estos datos para coordinar la demo. No solicitamos información clínica de pacientes en este formulario.",
-    back: "Atrás", continue: "Continuar", bookDemo: "Agenda una demo", successLabel: "Perfil recibido", successTitle: "Ahora agenda tu demo.", openCalendar: "Abrir agenda", schedulerNote: "Conecta aquí tu enlace de Calendly, Cal.com o agenda preferida antes de publicar.",
+    back: "Atrás", continue: "Continuar", bookDemo: "Solicitar una demo", successLabel: "Solicitud recibida", successTitle: "Gracias. Te contactaremos pronto.", emailDeliveryNote: "Recibimos tu solicitud y te contactaremos para coordinar la demo.",
     footerTop: "Volver arriba",
     independentTitle: "¿Cuál es tu especialidad?", independentText: "Selecciona la opción que mejor describe tu práctica.", independentLabel: "Especialidad",
     teamTitle: "¿En qué área se enfoca tu equipo?", teamText: "Selecciona el dominio clínico o modelo de atención principal.", teamLabel: "Área clínica",
     selectPlaceholder: "Selecciona una opción",
-    successSummary: (d) => `Gracias, ${d.full_name}. Prepararemos una demo para ${d.patient_volume} pacientes, adaptada a ${d.focus}.`,
-    schedulerMissing: "El perfil quedó listo. Antes de publicar, configura BOOKING_URL en script.js para conectar tu agenda real."
+    successSummary: (d) => `Gracias, ${d.full_name}. Recibimos tu solicitud y prepararemos una demo adaptada a ${d.focus}.`,
+    formError: "No pudimos enviar tu solicitud. Inténtalo de nuevo o escríbenos a info@carenetai.health."
   },
   en: {
     navHow: "How it works", navFor: "For your practice", navPrinciples: "Principles", navDemo: "Book a demo",
@@ -831,13 +832,13 @@ const copy = {
     formStep4: "Step 4 of 4", formContactTitle: "Who should we contact for the demo?", formContactText: "We'll use these details only to coordinate the conversation.",
     fieldName: "Full name", fieldNamePlaceholder: "Dr. Ana Perez", fieldEmail: "Professional email", fieldPhone: "Phone number", fieldPhonePlaceholder: "+1 555 000 0000", fieldOrg: "Clinic or organization", fieldOrgPlaceholder: "Your clinic name", fieldCountry: "Country", fieldCountryPlaceholder: "United States",
     privacyNote: "By continuing, you agree that CareNet AI may use these details to coordinate the demo. We do not request patient clinical information in this form.",
-    back: "Back", continue: "Continue", bookDemo: "Book a demo", successLabel: "Profile received", successTitle: "Now book your demo.", openCalendar: "Open calendar", schedulerNote: "Connect your Calendly, Cal.com, or preferred scheduling link here before publishing.",
+    back: "Back", continue: "Continue", bookDemo: "Request a demo", successLabel: "Request received", successTitle: "Thank you. We’ll be in touch soon.", emailDeliveryNote: "We received your request and will contact you to coordinate the demo.",
     footerTop: "Back to top",
     independentTitle: "What is your specialty?", independentText: "Choose the option that best describes your practice.", independentLabel: "Specialty",
     teamTitle: "What does your clinical team focus on?", teamText: "Choose your main clinical domain or care model.", teamLabel: "Clinical focus",
     selectPlaceholder: "Select an option",
-    successSummary: (d) => `Thanks, ${d.full_name}. We'll prepare a demo for ${d.patient_volume} patients, tailored to ${d.focus}.`,
-    schedulerMissing: "Your profile is ready. Before publishing, set BOOKING_URL in script.js to connect your live scheduling page."
+    successSummary: (d) => `Thanks, ${d.full_name}. We received your request and will prepare a demo tailored to ${d.focus}.`,
+    formError: "We couldn’t send your request. Please try again or email us at info@carenetai.health."
   }
 };
 
@@ -939,7 +940,7 @@ document.querySelectorAll(".next-btn").forEach(btn => btn.addEventListener("clic
   goToStep(Number(btn.dataset.next));
 }));
 
-leadForm.addEventListener("submit", (event) => {
+leadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const inputs = [...leadForm.querySelectorAll('.form-step[data-step="4"] input[required]')];
   let valid = true;
@@ -953,24 +954,33 @@ leadForm.addEventListener("submit", (event) => {
 
   const fd = new FormData(leadForm);
   formData = { ...formData, ...Object.fromEntries(fd.entries()) };
-  document.querySelectorAll(".form-step").forEach(s => s.classList.remove("active"));
-  document.getElementById("formSuccess").classList.add("active");
-  document.getElementById("successSummary").textContent = copy[lang].successSummary(formData);
-  document.querySelectorAll(".progress-step").forEach(p => { p.classList.remove("active"); p.classList.add("done"); });
+  const formError = document.getElementById("formError");
+  formError.hidden = true;
 
-  const bookingButton = document.getElementById("bookingButton");
-  const schedulerNote = document.getElementById("schedulerNote");
-  if (BOOKING_URL) {
-    bookingButton.href = BOOKING_URL;
-    schedulerNote.style.display = "none";
-  } else {
-    bookingButton.href = "mailto:info@carenetai.health?subject=CareNet%20AI%20Demo";
-    bookingButton.removeAttribute("target");
-    schedulerNote.textContent = copy[lang].schedulerMissing;
+  try {
+    const response = await fetch(FORM_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        ...formData,
+        _subject: "Nueva solicitud de demo — CareNet AI",
+        _template: "table",
+        _replyto: formData.email
+      })
+    });
+    if (!response.ok) throw new Error("Form submission failed");
+
+    document.querySelectorAll(".form-step").forEach(s => s.classList.remove("active"));
+    document.getElementById("formSuccess").classList.add("active");
+    document.getElementById("successSummary").textContent = copy[lang].successSummary(formData);
+    document.querySelectorAll(".progress-step").forEach(p => { p.classList.remove("active"); p.classList.add("done"); });
+  } catch (error) {
+    formError.textContent = copy[lang].formError;
+    formError.hidden = false;
   }
-
-  // Integration point: send formData to your CRM/backend before opening the scheduler.
-  console.log("CareNet lead", formData);
 });
 
 
